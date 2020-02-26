@@ -1,0 +1,15 @@
+name: Test
+on:
+  push:
+    branches: 
+      - tullo
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Build
+      uses: tullo/actions/build@tullo
+      with:
+        token: foo
+        tag: bar
