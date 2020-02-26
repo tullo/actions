@@ -8,8 +8,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+
+    # - name: Login to Okteto
+    #   uses: tullo/actions/login@tullo
+    #   id: login
+    #   with:
+    #     token: ${{ secrets.OKTETO_TOKEN }}
+
+    # - name: Get Kubeconfig
+    #   uses: tullo/actions/namespace@tullo
+    #   id: namespace
+    #   with:
+    #     token: ${{ secrets.OKTETO_TOKEN }}
+    #     namespace: ${{ secrets.OKTETO_NS }}
+
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
     - name: Build
       uses: tullo/actions/build@tullo
+      env:
+        BUILD_DATE: ${{ steps.date.outputs.date }}
+        PACKAGE_NAME: action-test
+        VCS_REF: ${{ github.sha }}      
       with:
-        token: foo
-        tag: bar
+        token: ${{ secrets.OKTETO_TOKEN }}
+        tag: registry.cloud.okteto.net/${{ secrets.OKTETO_NS }}/action-test:${{ github.sha }}
+        buildargs: PACKAGE_NAME,VCS_REF,BUILD_DATE

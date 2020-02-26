@@ -1,0 +1,11 @@
+name: 'Namespace'
+description: 'Login to Okteto Cloud'
+inputs: 
+  token: 
+    description: 'Your Okteto API token'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.token }}
