@@ -1,7 +1,7 @@
 name: Test
 on:
   push:
-    branches: 
+    branches:
       - tullo
 jobs:
   build:
@@ -31,8 +31,9 @@ jobs:
       env:
         BUILD_DATE: ${{ steps.date.outputs.date }}
         PACKAGE_NAME: action-test
-        VCS_REF: ${{ github.sha }}      
+        VCS_REF: ${{ github.sha }}
       with:
         token: ${{ secrets.OKTETO_TOKEN }}
         tag: registry.cloud.okteto.net/${{ secrets.OKTETO_NS }}/action-test:${{ github.sha }}
         buildargs: PACKAGE_NAME,VCS_REF,BUILD_DATE
+
