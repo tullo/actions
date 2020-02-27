@@ -26,4 +26,3 @@ fi
 params=$(eval echo -t "$tag" -f "$file" "$BUILDPARAMS" "$path")
 echo $params
 okteto build $params
-
