@@ -15,19 +15,19 @@ jobs:
     #   with:
     #     token: ${{ secrets.OKTETO_TOKEN }}
 
-    # - name: Get Kubeconfig
-    #   uses: tullo/actions/namespace@tullo
-    #   id: namespace
-    #   with:
-    #     token: ${{ secrets.OKTETO_TOKEN }}
-    #     namespace: ${{ secrets.OKTETO_NS }}
+    - name: Get Kubeconfig
+      uses: tullo/actions/namespace@tullo
+      id: namespace
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+        namespace: ${{ secrets.OKTETO_NS }}
 
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 
     - name: Build
-      uses: tullo/actions/build@tullo
+      uses: okteto/actions/build@v3
       env:
         BUILD_DATE: ${{ steps.date.outputs.date }}
         PACKAGE_NAME: action-test
@@ -37,3 +37,12 @@ jobs:
         tag: registry.cloud.okteto.net/${{ secrets.OKTETO_NS }}/action-test:${{ github.sha }}
         buildargs: PACKAGE_NAME,VCS_REF,BUILD_DATE
 
+    - uses: tullo/actions/deploy@tullo
+      env:
+        KUBECONFIG: ${{ steps.namespace.outputs.kubeconfig }}
+      with:
+        namespace: ${{ secrets.OKTETO_NS }}
+        manifest: k8s.yml
+        tag: tullo/action-test:${{ github.sha }}
+        registry: registry.cloud.okteto.net
+        waitOn: deployment/action-test
